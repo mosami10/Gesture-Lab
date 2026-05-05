@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GestureLab — Part 1 Starter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <video id="camera" autoplay playsinline muted></video>
+    <canvas id="stage"></canvas>
+
+    <header class="topbar glass">
+      <div>
+        <p class="eyebrow">GestureLab</p>
+        <h1>Interactive gesture playground</h1>
+      </div>
+      <div class="topbar-actions">
+        <button id="startButton" class="primary-btn">Start Camera</button>
+        <button id="clearButton" class="ghost-btn">Clear</button>
+      </div>
+    </header>
+
+    <aside class="sidebar glass">
+      <div class="panel-section">
+        <p class="panel-label">Part 1</p>
+        <h2>Core engine + starter modes</h2>
+        <p class="panel-copy">
+          One camera, one tracker, one canvas, and switchable modes.
+        </p>
+      </div>
+
+      <div class="panel-section">
+        <p class="panel-label">Modes</p>
+        <div class="mode-grid">
+          <button class="mode-btn active" data-mode="debug">Debug Tracking</button>
+          <button class="mode-btn" data-mode="airdraw">Air Drawer</button>
+          <button class="mode-btn" data-mode="handconnect">Hand Connect</button>
+          <button class="mode-btn" data-mode="particletext">Particle Text</button>
+          <button class="mode-btn" data-mode="xrayvision">X-Ray Vision</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <p class="panel-label">Status</p>
+        <div class="status-list">
+          <div class="status-row"><span>Engine</span><strong id="engineStatus">Idle</strong></div>
+          <div class="status-row"><span>Active Mode</span><strong id="modeStatus">Debug Tracking</strong></div>
+          <div class="status-row"><span>Hands</span><strong id="handsStatus">0</strong></div>
+          <div class="status-row"><span>Pose</span><strong id="poseStatus">No</strong></div>
+          <div class="status-row"><span>FPS</span><strong id="fpsStatus">0</strong></div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <p class="panel-label">How to test</p>
+        <ul class="tips-list">
+          <li>Debug Tracking: shows hand and body points.</li>
+          <li>Air Drawer: pinch thumb + index finger to draw.</li>
+          <li>Hand Connect: raise both hands to see energy links.</li>
+          <li>Particle Text and X-Ray Vision are placeholders for later parts.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <div class="hud glass">
+      <div class="hud-line"><span>Mode</span><strong id="hudMode">Debug Tracking</strong></div>
+      <div class="hud-line"><span>Tip</span><strong id="hudTip">Start camera to begin.</strong></div>
+    </div>
+
+    <div id="loader" class="loader glass">
+      <p>GestureLab</p>
+      <h2>Ready for Part 1</h2>
+      <span>Press “Start Camera” to load tracking.</span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+
+  <script src="./js/core/utils.js"></script>
+  <script src="./js/core/mode-manager.js"></script>
+  <script src="./js/modes/debug-tracking-mode.js"></script>
+  <script src="./js/modes/air-draw-mode.js"></script>
+  <script src="./js/modes/hand-connect-mode.js"></script>
+  <script src="./js/modes/coming-soon-mode.js"></script>
+  <script src="./js/core/tracker.js"></script>
+  <script src="./js/core/app.js"></script>
+</body>
+</html>
