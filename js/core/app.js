@@ -28,6 +28,8 @@ window.GestureLab = window.GestureLab || {};
       this.startButton = document.getElementById('startButton');
       this.clearButton = document.getElementById('clearButton');
       this.modeButtons = [...document.querySelectorAll('.mode-btn')];
+      this.accentPicker = document.getElementById('accentPicker');
+      this.swatches = [...document.querySelectorAll('.swatch')];
 
       this.shared = { app: this };
       this.tracker = new Tracker(this.video);
@@ -39,6 +41,8 @@ window.GestureLab = window.GestureLab || {};
 
       this.registerModes();
       this.bindEvents();
+      this.bindThemeControls();
+      this.restoreTheme();
       this.resize();
       this.modeManager.setMode('debug');
       this.updateModeUI('debug');
@@ -76,7 +80,7 @@ window.GestureLab = window.GestureLab || {};
           console.error(error);
           this.engineStatus.textContent = 'Error';
           this.hudTip.textContent = 'Camera permission or browser support failed.';
-          alert('Could not start camera. Make sure camera permission is allowed and run from a local server.');
+          alert('Could not start camera. Make sure camera permission is allowed in your browser and system settings.');
         }
       });
 
@@ -91,6 +95,72 @@ window.GestureLab = window.GestureLab || {};
           this.updateModeUI(key);
         });
       });
+    }
+
+    bindThemeControls() {
+      if (this.accentPicker) {
+        this.accentPicker.addEventListener('input', (event) => {
+          this.setAccent(event.target.value);
+        });
+      }
+
+      this.swatches.forEach((button) => {
+        button.addEventListener('click', () => {
+          const color = button.dataset.color;
+          if (!color) return;
+          if (this.accentPicker) this.accentPicker.value = color;
+          this.setAccent(color);
+        });
+      });
+    }
+
+    restoreTheme() {
+      const saved = localStorage.getItem('gesturelab-accent');
+      if (saved) {
+        if (this.accentPicker) this.accentPicker.value = saved;
+        this.setAccent(saved);
+      } else if (this.accentPicker) {
+        this.setAccent(this.accentPicker.value);
+      }
+    }
+
+    setAccent(hex) {
+      const strong = this.shiftHex(hex, -24);
+      const soft = this.hexToRgba(hex, 0.16);
+
+      document.documentElement.style.setProperty('--accent', hex);
+      document.documentElement.style.setProperty('--accent-strong', strong);
+      document.documentElement.style.setProperty('--accent-soft', soft);
+
+      localStorage.setItem('gesturelab-accent', hex);
+    }
+
+    shiftHex(hex, amount) {
+      const clean = hex.replace('#', '');
+      const num = parseInt(clean, 16);
+
+      let r = (num >> 16) + amount;
+      let g = ((num >> 8) & 0x00FF) + amount;
+      let b = (num & 0x0000FF) + amount;
+
+      r = Math.max(Math.min(255, r), 0);
+      g = Math.max(Math.min(255, g), 0);
+      b = Math.max(Math.min(255, b), 0);
+
+      return '#' + [r, g, b]
+        .map((value) => value.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    hexToRgba(hex, alpha = 1) {
+      const clean = hex.replace('#', '');
+      const num = parseInt(clean, 16);
+
+      const r = num >> 16;
+      const g = (num >> 8) & 255;
+      const b = num & 255;
+
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
 
     updateModeUI(key) {
